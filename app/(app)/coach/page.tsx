@@ -195,11 +195,11 @@ export default function CoachPage() {
                 <Bot className="h-3.5 w-3.5 text-white" />
               </div>
               <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 border border-[#a78bfa]/10 shadow-[0_0_25px_rgba(167,139,250,0.08)]">
-                <p className="text-[11px] text-[#a78bfa]/70 mb-1.5 font-medium tracking-wide">Consulting the cosmos...</p>
-                <div className="flex gap-1.5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#a78bfa]/60 animate-bounce shadow-[0_0_6px_rgba(167,139,250,0.4)]" style={{ animationDelay: "0ms", animationDuration: "0.6s" }} />
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#d946ef]/60 animate-bounce shadow-[0_0_6px_rgba(217,70,239,0.4)]" style={{ animationDelay: "150ms", animationDuration: "0.6s" }} />
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#22d3ee]/60 animate-bounce shadow-[0_0_6px_rgba(34,211,238,0.4)]" style={{ animationDelay: "300ms", animationDuration: "0.6s" }} />
+                <p className="text-[11px] text-[#a78bfa]/80 mb-2 font-semibold tracking-wide">Lumina is consulting the stars...</p>
+                <div className="flex gap-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#a78bfa] animate-bounce shadow-[0_0_8px_rgba(167,139,250,0.6),0_0_16px_rgba(167,139,250,0.3)]" style={{ animationDelay: "0ms", animationDuration: "0.7s" }} />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#d946ef] animate-bounce shadow-[0_0_8px_rgba(217,70,239,0.6),0_0_16px_rgba(217,70,239,0.3)]" style={{ animationDelay: "150ms", animationDuration: "0.7s" }} />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#22d3ee] animate-bounce shadow-[0_0_8px_rgba(34,211,238,0.6),0_0_16px_rgba(34,211,238,0.3)]" style={{ animationDelay: "300ms", animationDuration: "0.7s" }} />
                 </div>
               </div>
             </div>

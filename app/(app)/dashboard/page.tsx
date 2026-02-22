@@ -326,11 +326,11 @@ export default function DashboardPage() {
               <Link
                 href="/habits"
                 onMouseEnter={() => playHoverTick()}
-                className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#a78bfa] via-[#d946ef] to-[#a78bfa] bg-[length:200%_100%] animate-shimmer px-8 py-4 text-base font-semibold text-white shadow-[0_0_30px_rgba(167,139,250,0.4),0_0_60px_rgba(167,139,250,0.15)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(167,139,250,0.6),0_0_100px_rgba(167,139,250,0.2)] hover:scale-105"
+                className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#a78bfa] via-[#d946ef] to-[#a78bfa] bg-[length:200%_100%] animate-shimmer px-10 py-5 text-lg font-bold text-white shadow-[0_0_40px_rgba(167,139,250,0.5),0_0_80px_rgba(167,139,250,0.2)] transition-all duration-300 hover:shadow-[0_0_60px_rgba(167,139,250,0.7),0_0_120px_rgba(167,139,250,0.3)] hover:scale-[1.08] active:scale-[0.97]"
               >
                 <Plus className="h-5 w-5" />
                 <span>Create First Crystal</span>
-                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-2" />
               </Link>
 
               <p className="mt-6 text-[11px] text-white/15">

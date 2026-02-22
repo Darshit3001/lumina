@@ -65,14 +65,14 @@ const fresnelFragment = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
-    float fresnel = pow(1.0 - dot(vWorldNormal, vViewDir), 3.5);
+    float fresnel = pow(1.0 - dot(vWorldNormal, vViewDir), 4.0);
     
-    // Emissive core glow — stronger on completed
-    vec3 coreGlow = uColor * (0.4 + uCompleted * 0.6);
+    // Emissive core glow — diamond-like
+    vec3 coreGlow = uColor * (0.5 + uCompleted * 0.7);
     
-    // Rim light — vivid when completed
-    float rimStrength = 0.7 + uCompleted * 0.8;
-    vec3 rimColor = uColor * fresnel * rimStrength * 2.0;
+    // Rim light — vivid diamond fire when completed
+    float rimStrength = 0.8 + uCompleted * 1.0;
+    vec3 rimColor = uColor * fresnel * rimStrength * 2.5;
     
     // Rainbow-shift shimmer
     float shimmer = sin(vUv.y * 25.0 + uTime * 2.5) * 0.05;
@@ -163,23 +163,23 @@ function Crystal({ data, onClick }: CrystalProps) {
           <icosahedronGeometry args={[0.55, segments]} />
           <meshPhysicalMaterial
             color={data.color}
-            transmission={0.95}
-            roughness={0.02}
-            metalness={0.15}
+            transmission={0.98}
+            roughness={0.01}
+            metalness={0.18}
             clearcoat={1}
-            clearcoatRoughness={0.02}
-            ior={2.42}
-            thickness={2.2}
-            envMapIntensity={2.5}
+            clearcoatRoughness={0.01}
+            ior={2.45}
+            thickness={2.5}
+            envMapIntensity={3.0}
             emissive={data.color}
-            emissiveIntensity={data.completed ? 0.9 : 0.25}
+            emissiveIntensity={data.completed ? 1.0 : 0.3}
             transparent
-            opacity={0.96}
+            opacity={0.97}
             toneMapped={false}
             attenuationColor={new THREE.Color(data.color)}
-            attenuationDistance={1.5}
-            specularIntensity={1.5}
-            sheen={0.3}
+            attenuationDistance={1.2}
+            specularIntensity={2.0}
+            sheen={0.4}
             sheenColor={new THREE.Color(data.color)}
           />
         </mesh>

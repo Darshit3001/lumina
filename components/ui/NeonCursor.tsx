@@ -7,8 +7,8 @@
 
 import { useEffect, useRef, useCallback } from "react";
 
-const TRAIL_LENGTH = 12;
-const TRAIL_DECAY = 0.85;
+const TRAIL_LENGTH = 8;
+const TRAIL_DECAY = 0.8;
 
 export default function NeonCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export default function NeonCursor() {
 
     // Update main dot
     if (dotRef.current) {
-      dotRef.current.style.transform = `translate3d(${x - 10}px, ${y - 10}px, 0)`;
+      dotRef.current.style.transform = `translate3d(${x - 8}px, ${y - 8}px, 0)`;
     }
 
     // Update trail particles with spring-like follow
@@ -78,9 +78,9 @@ export default function NeonCursor() {
         <div
           key={i}
           ref={(el) => { trailRefs.current[i] = el; }}
-          className="absolute left-0 top-0 h-2 w-2 rounded-full"
+          className="absolute left-0 top-0 h-1.5 w-1.5 rounded-full"
           style={{
-            background: `radial-gradient(circle, rgba(167,139,250,0.6) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, rgba(167,139,250,0.35) 0%, transparent 70%)`,
             willChange: "transform, opacity",
           }}
         />
@@ -89,10 +89,10 @@ export default function NeonCursor() {
       {/* Main dot */}
       <div
         ref={dotRef}
-        className="absolute left-0 top-0 h-5 w-5 rounded-full"
+        className="absolute left-0 top-0 h-4 w-4 rounded-full"
         style={{
-          background: `radial-gradient(circle, rgba(167,139,250,0.9) 0%, rgba(167,139,250,0.3) 50%, transparent 70%)`,
-          boxShadow: "0 0 12px rgba(167,139,250,0.5), 0 0 30px rgba(167,139,250,0.2)",
+          background: `radial-gradient(circle, rgba(167,139,250,0.7) 0%, rgba(167,139,250,0.2) 50%, transparent 70%)`,
+          boxShadow: "0 0 8px rgba(167,139,250,0.3), 0 0 20px rgba(167,139,250,0.1)",
           willChange: "transform",
         }}
       />

@@ -19,7 +19,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useHabitStore } from "@/stores/habitStore";
-import { playCompletionChime, playExplosionBurst, playSuccessFanfare } from "@/lib/sounds";
+import { playCompletionChime, playExplosionBurst, playSuccessFanfare, playHoverTick } from "@/lib/sounds";
 import type { CrystalData } from "@/components/three/Sanctuary";
 
 const SanctuaryScene = dynamic(
@@ -260,50 +260,83 @@ export default function DashboardPage() {
       )}
 
       {/* ══════════════════════════════════════════════════════
-          EMPTY STATE — Beautiful "Create your first crystal"
+          EMPTY STATE — Immersive "Create your first crystal"
          ══════════════════════════════════════════════════════ */}
       {!hasHabits && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
-          <div className="pointer-events-auto glass rounded-3xl px-10 py-10 text-center max-w-md relative overflow-hidden">
-            {/* Animated shine sweep */}
-            <div className="glass-shine-effect absolute inset-0" />
+          <div className="pointer-events-auto relative max-w-lg w-full">
+            {/* Outer pulsating rings */}
+            <div className="absolute inset-[-40px] rounded-full border border-[#a78bfa]/12 animate-ping" style={{ animationDuration: "3s" }} />
+            <div className="absolute inset-[-25px] rounded-full border border-[#d946ef]/10 animate-ping" style={{ animationDuration: "4s", animationDelay: "0.5s" }} />
+            <div className="absolute inset-[-60px] rounded-full border border-[#22d3ee]/8 animate-ping" style={{ animationDuration: "5s", animationDelay: "1s" }} />
+            <div className="absolute inset-[-80px] rounded-full border border-[#6366f1]/5 animate-ping" style={{ animationDuration: "6s", animationDelay: "1.5s" }} />
 
-            {/* Floating gem icon with neon glow */}
-            <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#a78bfa]/20 to-[#d946ef]/20 blur-xl animate-pulse-glow" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_30px_rgba(167,139,250,0.5)]">
-                <Gem className="h-7 w-7 text-white drop-shadow-lg animate-float" />
+            {/* Volumetric glow backdrop */}
+            <div className="absolute -inset-24 rounded-full bg-gradient-to-br from-[#a78bfa]/12 via-[#d946ef]/8 to-[#22d3ee]/6 blur-[100px] animate-pulse-glow" />
+            <div className="absolute -inset-12 rounded-full bg-[#a78bfa]/5 blur-[60px] animate-pulse-glow" style={{ animationDelay: "1s" }} />
+
+            <div className="glass rounded-3xl px-10 py-12 text-center relative overflow-hidden border border-white/[0.1] shadow-[0_0_80px_rgba(167,139,250,0.12),0_0_120px_rgba(217,70,239,0.06)]">
+              {/* Animated shine sweep */}
+              <div className="glass-shine-effect absolute inset-0" />
+
+              {/* Inner neon border glow */}
+              <div className="absolute inset-0 rounded-3xl border border-[#a78bfa]/15 shadow-[inset_0_0_30px_rgba(167,139,250,0.05)]" />
+
+              {/* Floating gem with layered glow */}
+              <div className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center">
+                {/* Triple glow layers */}
+                <div className="absolute inset-0 rounded-full bg-[#a78bfa]/10 blur-3xl animate-pulse-glow" />
+                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-[#a78bfa]/20 to-[#d946ef]/15 blur-2xl animate-pulse-glow" style={{ animationDelay: "0.5s" }} />
+                <div className="absolute inset-6 rounded-full bg-gradient-to-br from-[#a78bfa]/25 to-[#d946ef]/20 blur-xl" />
+
+                {/* Orbiting ring */}
+                <div className="absolute inset-[-8px] rounded-full border border-[#a78bfa]/20 animate-spin" style={{ animationDuration: "12s" }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-[#a78bfa] shadow-[0_0_10px_rgba(167,139,250,0.8)]" />
+                </div>
+                <div className="absolute inset-[-16px] rounded-full border border-[#22d3ee]/10 animate-spin" style={{ animationDuration: "20s", animationDirection: "reverse" }}>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-1.5 w-1.5 rounded-full bg-[#22d3ee] shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+                </div>
+
+                {/* Gem icon with subtle rotation */}
+                <div className="relative flex h-22 w-22 items-center justify-center rounded-2xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_50px_rgba(167,139,250,0.6),0_0_100px_rgba(167,139,250,0.25),0_0_150px_rgba(217,70,239,0.1)] animate-float"
+                  style={{ animation: "float 3s ease-in-out infinite, spin 20s linear infinite" }}
+                >
+                  <Gem className="h-10 w-10 text-white drop-shadow-lg" />
+                </div>
               </div>
+
+              <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-[#a78bfa]/50 mb-4">
+                Your Sanctuary Awaits
+              </span>
+
+              <h2 className="text-3xl font-bold tracking-tight text-white/90 mb-4">
+                Create Your First{" "}
+                <span className="bg-gradient-to-r from-[#a78bfa] via-[#d946ef] to-[#22d3ee] bg-clip-text text-transparent">
+                  Crystal
+                </span>
+              </h2>
+
+              <p className="text-sm leading-relaxed text-white/40 mb-10 max-w-sm mx-auto">
+                Each habit becomes a glowing crystal in your 3D sanctuary.
+                It grows taller with your streak, pulses with energy, and
+                explodes with 800+ particles when you complete it.
+              </p>
+
+              {/* CTA Button with hover sound */}
+              <Link
+                href="/habits"
+                onMouseEnter={() => playHoverTick()}
+                className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#a78bfa] via-[#d946ef] to-[#a78bfa] bg-[length:200%_100%] animate-shimmer px-8 py-4 text-base font-semibold text-white shadow-[0_0_30px_rgba(167,139,250,0.4),0_0_60px_rgba(167,139,250,0.15)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(167,139,250,0.6),0_0_100px_rgba(167,139,250,0.2)] hover:scale-105"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Create First Crystal</span>
+                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+              </Link>
+
+              <p className="mt-6 text-[11px] text-white/15">
+                Takes 10 seconds · Your sanctuary starts building immediately
+              </p>
             </div>
-
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-[#a78bfa]/60 mb-3">
-              Your Sanctuary Awaits
-            </span>
-
-            <h2 className="text-2xl font-bold tracking-tight text-white/90 neon-glow mb-3">
-              Create Your First Crystal
-            </h2>
-
-            <p className="text-sm leading-relaxed text-white/40 mb-8">
-              Each habit becomes a glowing crystal in your 3D sanctuary.
-              It grows taller with your streak, pulses with energy, and
-              explodes with light when you complete it.
-            </p>
-
-            {/* CTA Button — links to habits page */}
-            <Link
-              href="/habits"
-              className="group inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#a78bfa] to-[#d946ef] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_0_25px_rgba(167,139,250,0.4)] transition-all duration-300 hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-105"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Create First Crystal</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-
-            {/* Secondary hint */}
-            <p className="mt-5 text-[11px] text-white/20">
-              Demo crystals are shown above — yours will be even better
-            </p>
           </div>
         </div>
       )}

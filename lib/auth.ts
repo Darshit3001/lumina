@@ -13,21 +13,18 @@ export async function getDbUser() {
   const { userId: clerkId } = await auth();
   if (!clerkId) return null;
 
-  let user = await prisma.user.findUnique({ where: { clerkId } });
+  const clerkUser = await currentUser();
+  const email = clerkUser?.emailAddresses?.[0]?.emailAddress ?? `${clerkId}@lumina.app`;
+  const name = clerkUser?.firstName
+    ? `${clerkUser.firstName} ${clerkUser.lastName ?? ""}`.trim()
+    : null;
+  const avatarUrl = clerkUser?.imageUrl ?? null;
 
-  if (!user) {
-    const clerkUser = await currentUser();
-    user = await prisma.user.create({
-      data: {
-        clerkId,
-        email: clerkUser?.emailAddresses?.[0]?.emailAddress ?? `${clerkId}@lumina.app`,
-        name: clerkUser?.firstName
-          ? `${clerkUser.firstName} ${clerkUser.lastName ?? ""}`.trim()
-          : null,
-        avatarUrl: clerkUser?.imageUrl ?? null,
-      },
-    });
-  }
+  const user = await prisma.user.upsert({
+    where: { clerkId },
+    update: { email, name, avatarUrl },
+    create: { clerkId, email, name, avatarUrl },
+  });
 
   return user;
 }

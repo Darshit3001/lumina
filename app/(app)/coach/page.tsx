@@ -22,6 +22,7 @@ export default function CoachPage() {
     sendMessage,
     status,
     setMessages,
+    error,
   } = useChat({
     transport: new DefaultChatTransport({ api: "/api/coach" }),
   });
@@ -101,16 +102,16 @@ export default function CoachPage() {
       </div>
 
       {/* ── Chat Area ─────────────────────────────────────── */}
-      <div className="glass flex flex-1 flex-col rounded-2xl overflow-hidden">
+      <div className="glass flex flex-1 flex-col rounded-2xl overflow-hidden border border-white/[0.06]">
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide scroll-smooth">
           {/* Welcome if no messages */}
           {messages.length === 0 && loadedHistory && (
             <div className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_12px_rgba(167,139,250,0.3)]">
                 <Bot className="h-4 w-4 text-white" />
               </div>
-              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg">
+              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg border border-white/[0.06] shadow-[0_0_20px_rgba(167,139,250,0.06)]">
                 <p className="text-sm leading-relaxed text-white/70">
                   Welcome, Seeker. I am Lumina — your cosmic habit guide.
                   I can see the patterns in your crystal sanctuary. Ask me
@@ -134,6 +135,23 @@ export default function CoachPage() {
             </div>
           )}
 
+          {/* Error fallback */}
+          {error && (
+            <div className="flex gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-red-500/20">
+                <Bot className="h-3.5 w-3.5 text-red-400" />
+              </div>
+              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg border border-red-500/15">
+                <p className="text-sm text-red-300/80 leading-relaxed">
+                  The cosmic connection flickered. Please try again — Lumina is realigning the stars.
+                </p>
+                <p className="text-[10px] text-white/20 mt-1">
+                  {error.message || "Network error"}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Chat messages */}
           {messages.map((message: UIMessage) => (
             <div
@@ -147,7 +165,7 @@ export default function CoachPage() {
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
                   message.role === "user"
                     ? "bg-white/[0.06]"
-                    : "bg-gradient-to-br from-[#a78bfa] to-[#d946ef]"
+                    : "bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_10px_rgba(167,139,250,0.25)]"
                 }`}
               >
                 {message.role === "user" ? (
@@ -157,12 +175,12 @@ export default function CoachPage() {
                 )}
               </div>
 
-              {/* Bubble */}
+              {/* Bubble with glass glow */}
               <div
                 className={`max-w-lg rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   message.role === "user"
-                    ? "rounded-tr-sm bg-[#a78bfa]/15 text-white/80 border border-[#a78bfa]/20"
-                    : "rounded-tl-sm glass text-white/70"
+                    ? "rounded-tr-sm bg-[#a78bfa]/15 text-white/80 border border-[#a78bfa]/20 shadow-[0_0_15px_rgba(167,139,250,0.08)]"
+                    : "rounded-tl-sm glass text-white/70 border border-white/[0.06] shadow-[0_0_20px_rgba(167,139,250,0.05)]"
                 }`}
               >
                 {getMessageText(message)}
@@ -170,17 +188,18 @@ export default function CoachPage() {
             </div>
           ))}
 
-          {/* Typing indicator */}
+          {/* Typing indicator with "Thinking..." label + glow */}
           {isStreaming && (
             <div className="flex gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef]">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_12px_rgba(167,139,250,0.4)]">
                 <Bot className="h-3.5 w-3.5 text-white" />
               </div>
-              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3">
+              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 border border-[#a78bfa]/10 shadow-[0_0_25px_rgba(167,139,250,0.08)]">
+                <p className="text-[11px] text-[#a78bfa]/70 mb-1.5 font-medium tracking-wide">Consulting the cosmos...</p>
                 <div className="flex gap-1.5">
-                  <div className="h-2 w-2 rounded-full bg-[#a78bfa]/50 animate-pulse" />
-                  <div className="h-2 w-2 rounded-full bg-[#a78bfa]/50 animate-pulse [animation-delay:150ms]" />
-                  <div className="h-2 w-2 rounded-full bg-[#a78bfa]/50 animate-pulse [animation-delay:300ms]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#a78bfa]/60 animate-bounce shadow-[0_0_6px_rgba(167,139,250,0.4)]" style={{ animationDelay: "0ms", animationDuration: "0.6s" }} />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#d946ef]/60 animate-bounce shadow-[0_0_6px_rgba(217,70,239,0.4)]" style={{ animationDelay: "150ms", animationDuration: "0.6s" }} />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#22d3ee]/60 animate-bounce shadow-[0_0_6px_rgba(34,211,238,0.4)]" style={{ animationDelay: "300ms", animationDuration: "0.6s" }} />
                 </div>
               </div>
             </div>
@@ -202,7 +221,7 @@ export default function CoachPage() {
               type="submit"
               size="icon"
               disabled={!input.trim() || isStreaming}
-              className="h-10 w-10 shrink-0 bg-gradient-to-r from-[#a78bfa] to-[#d946ef] text-white shadow-[0_0_12px_rgba(167,139,250,0.25)] disabled:opacity-40"
+              className="h-10 w-10 shrink-0 bg-gradient-to-r from-[#a78bfa] to-[#d946ef] text-white shadow-[0_0_15px_rgba(167,139,250,0.3)] hover:shadow-[0_0_25px_rgba(167,139,250,0.5)] disabled:opacity-40 transition-all"
             >
               {isStreaming ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

@@ -7,6 +7,7 @@
 
 import { useEffect } from "react";
 import { useHabitStore } from "@/stores/habitStore";
+import { isSupabaseConnected } from "@/lib/supabase";
 
 export default function DataProvider({ children }: { children: React.ReactNode }) {
   const fetchAll = useHabitStore((s) => s.fetchAll);
@@ -15,12 +16,18 @@ export default function DataProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (!hasFetched) {
-      fetchAll();
+      console.info("[LUMINA] 🚀 Fetching habits & entries...");
+      fetchAll().then(() => {
+        console.info("[LUMINA] ✅ Data loaded");
+      });
     }
   }, [fetchAll, hasFetched]);
 
   // Supabase realtime
   useEffect(() => {
+    if (isSupabaseConnected) {
+      console.info("[LUMINA] 📡 Connecting Supabase realtime...");
+    }
     const unsub = subscribeRealtime();
     return unsub;
   }, [subscribeRealtime]);

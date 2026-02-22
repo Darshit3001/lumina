@@ -15,9 +15,14 @@ import {
   FileJson,
   FileSpreadsheet,
   AlertTriangle,
+  Monitor,
+  Cpu,
+  Zap,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHabitStore } from "@/stores/habitStore";
+import { useQualityStore, type QualityLevel } from "@/stores/qualityStore";
 import { toast } from "sonner";
 import {
   isSoundEnabled,
@@ -28,6 +33,8 @@ import {
 export default function SettingsPage() {
   const habits = useHabitStore((s) => s.habits);
   const entries = useHabitStore((s) => s.entries);
+  const quality = useQualityStore((s) => s.level);
+  const setQuality = useQualityStore((s) => s.setLevel);
 
   const [soundOn, setSoundOn] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -160,6 +167,44 @@ export default function SettingsPage() {
               }`}
             />
           </button>
+        </div>
+      </section>
+
+      {/* ── 3D Quality ──────────────────────────────────── */}
+      <section className="glass rounded-2xl p-6 mb-5">
+        <div className="flex items-center gap-3 mb-4">
+          <Monitor className="h-5 w-5 text-[#22d3ee]" style={{ filter: "drop-shadow(0 0 4px #22d3ee66)" }} />
+          <div>
+            <p className="text-sm font-medium text-white/80">3D Quality</p>
+            <p className="text-[11px] text-white/30">
+              Adjust rendering quality for your device
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-3">
+          {([
+            { key: "low" as QualityLevel, label: "Lite", icon: Zap, desc: "Best for mobile" },
+            { key: "medium" as QualityLevel, label: "Balanced", icon: Cpu, desc: "Recommended" },
+            { key: "high" as QualityLevel, label: "Ultra", icon: Monitor, desc: "Full effects" },
+            { key: "premium" as QualityLevel, label: "Premium", icon: Crown, desc: "Max quality" },
+          ]).map(({ key, label, icon: Icon, desc }) => (
+            <button
+              key={key}
+              onClick={() => {
+                setQuality(key);
+                toast.success(`Quality set to ${label}`);
+              }}
+              className={`rounded-xl p-3 text-center transition-all duration-300 border ${
+                quality === key
+                  ? "bg-[#a78bfa]/15 border-[#a78bfa]/40 shadow-[0_0_12px_rgba(167,139,250,0.15)]"
+                  : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06]"
+              }`}
+            >
+              <Icon className={`h-5 w-5 mx-auto mb-1.5 ${quality === key ? "text-[#a78bfa]" : "text-white/40"}`} />
+              <p className={`text-xs font-medium ${quality === key ? "text-white/90" : "text-white/50"}`}>{label}</p>
+              <p className="text-[10px] text-white/25 mt-0.5">{desc}</p>
+            </button>
+          ))}
         </div>
       </section>
 

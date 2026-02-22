@@ -5,11 +5,26 @@
 
 import { NextRequest } from "next/server";
 import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { streamText, type UIMessage } from "ai";
 import { prisma } from "@/lib/prisma";
 import { getDbUser } from "@/lib/auth";
 
 export const maxDuration = 60;
+
+/**
+ * Extract text content from a UIMessage (handles both SDK v6 `parts` format
+ * and legacy `content` string format).
+ */
+function extractContent(msg: Record<string, unknown>): string {
+  if (typeof msg.content === "string") return msg.content;
+  if (Array.isArray(msg.parts)) {
+    return (msg.parts as Array<Record<string, unknown>>)
+      .filter((p) => p.type === "text")
+      .map((p) => p.text as string)
+      .join("");
+  }
+  return "";
+}
 
 export async function POST(req: NextRequest) {
   const user = await getDbUser();
@@ -20,8 +35,16 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { messages: clientMessages } = await req.json();
-  const lastUserMsg = clientMessages?.[clientMessages.length - 1];
+  const body = await req.json();
+  const clientMessages: Array<Record<string, unknown>> = body.messages ?? [];
+
+  // Convert UIMessages to simple {role, content} for the LLM
+  const llmMessages = clientMessages.map((m) => ({
+    role: m.role as "user" | "assistant",
+    content: extractContent(m),
+  }));
+
+  const lastUserContent = llmMessages.filter((m) => m.role === "user").pop()?.content ?? "";
 
   // Fetch user's habits + recent entries for context
   const [habits, recentEntries] = await Promise.all([
@@ -68,9 +91,9 @@ User context:
 Keep responses under 200 words unless the user asks for more detail.`;
 
   // Save user message to DB
-  if (lastUserMsg?.content) {
+  if (lastUserContent) {
     await prisma.aiMessage.create({
-      data: { userId: user.id, role: "user", content: lastUserMsg.content },
+      data: { userId: user.id, role: "user", content: lastUserContent },
     });
   }
 
@@ -81,7 +104,7 @@ Keep responses under 200 words unless the user asks for more detail.`;
   const result = streamText({
     model: openai("gpt-4o"),
     system: systemPrompt,
-    messages: clientMessages,
+    messages: llmMessages,
     maxOutputTokens,
     onFinish: async ({ text }) => {
       // Save assistant response to DB

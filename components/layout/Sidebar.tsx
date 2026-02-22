@@ -37,8 +37,8 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-[72px] flex-col items-center py-4">
-      {/* Glass background panel */}
-      <div className="absolute inset-y-3 inset-x-2 rounded-2xl glass" />
+      {/* Glass background panel with noise overlay */}
+      <div className="absolute inset-y-3 inset-x-2 rounded-2xl glass-strong noise-overlay overflow-hidden" />
 
       {/* ── Logo ──────────────────────────────────────────── */}
       <Link

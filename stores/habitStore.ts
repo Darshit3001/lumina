@@ -273,6 +273,11 @@ export const useHabitStore = create<HabitState>((set, get) => ({
 
   // ── Supabase Realtime subscriptions ───────────────────────
   subscribeRealtime: () => {
+    if (!supabase) {
+      console.info("[LUMINA] Supabase not configured — realtime disabled");
+      return () => {};
+    }
+
     const channel = supabase
       .channel("lumina-realtime")
       .on(
@@ -285,9 +290,11 @@ export const useHabitStore = create<HabitState>((set, get) => ({
         { event: "*", schema: "public", table: "habit_entries" },
         () => { get().fetchEntries(); }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.info(`[LUMINA] Supabase realtime: ${status}`);
+      });
 
-    return () => { supabase.removeChannel(channel); };
+    return () => { supabase!.removeChannel(channel); };
   },
 
   // ── Compute the current streak for a habit ────────────────

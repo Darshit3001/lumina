@@ -16,7 +16,7 @@ const PAGE_META: Record<string, { title: string; neon: string; icon: React.Eleme
   "/calendar":   { title: "Calendar",   neon: "#22d3ee", icon: Activity },
   "/analytics":  { title: "Analytics",  neon: "#6366f1", icon: Activity },
   "/coach":      { title: "AI Coach",   neon: "#34d399", icon: Activity },
-  "/profile":    { title: "Profile",    neon: "#f472b6", icon: Activity },
+  "/settings":   { title: "Settings",   neon: "#f472b6", icon: Activity },
 };
 
 export default function Navbar() {

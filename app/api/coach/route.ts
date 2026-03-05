@@ -4,7 +4,7 @@
 // ============================================================
 
 import { NextRequest } from "next/server";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { streamText, type UIMessage } from "ai";
 import { prisma } from "@/lib/prisma";
 import { getDbUser } from "@/lib/auth";
@@ -102,7 +102,7 @@ Keep responses under 200 words unless the user asks for more detail.`;
   const maxOutputTokens = isPro ? 800 : 400;
 
   const result = streamText({
-    model: openai("gpt-4o"),
+    model: google("gemini-2.5-flash"),
     system: systemPrompt,
     messages: llmMessages,
     maxOutputTokens,

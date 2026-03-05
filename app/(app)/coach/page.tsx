@@ -97,7 +97,7 @@ export default function CoachPage() {
           AI Coach
         </h1>
         <p className="mt-1 text-sm text-white/40">
-          Powered by GPT-4o — your cosmic habit-building guide
+          Powered by Google Gemini — your cosmic habit-building guide
         </p>
       </div>
 
@@ -156,17 +156,15 @@ export default function CoachPage() {
           {messages.map((message: UIMessage) => (
             <div
               key={message.id}
-              className={`flex gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : ""
-              }`}
+              className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""
+                }`}
             >
               {/* Avatar */}
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                  message.role === "user"
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${message.role === "user"
                     ? "bg-white/[0.06]"
                     : "bg-gradient-to-br from-[#a78bfa] to-[#d946ef] shadow-[0_0_10px_rgba(167,139,250,0.25)]"
-                }`}
+                  }`}
               >
                 {message.role === "user" ? (
                   <User className="h-3.5 w-3.5 text-white/50" />
@@ -177,11 +175,10 @@ export default function CoachPage() {
 
               {/* Bubble with glass glow */}
               <div
-                className={`max-w-lg rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  message.role === "user"
+                className={`max-w-lg rounded-2xl px-4 py-3 text-sm leading-relaxed ${message.role === "user"
                     ? "rounded-tr-sm bg-[#a78bfa]/15 text-white/80 border border-[#a78bfa]/20 shadow-[0_0_15px_rgba(167,139,250,0.08)]"
                     : "rounded-tl-sm glass text-white/70 border border-white/[0.06] shadow-[0_0_20px_rgba(167,139,250,0.05)]"
-                }`}
+                  }`}
               >
                 {getMessageText(message)}
               </div>
@@ -231,7 +228,7 @@ export default function CoachPage() {
             </Button>
           </form>
           <p className="mt-2 text-center text-[10px] text-white/20">
-            Lumina uses GPT-4o · Responses may vary
+            Lumina uses Google Gemini · Responses may vary
           </p>
         </div>
       </div>

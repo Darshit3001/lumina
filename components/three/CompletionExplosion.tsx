@@ -94,6 +94,44 @@ interface CompletionExplosionProps {
   onComplete: (id: string) => void;
 }
 
+function createExplosionGeometry(streak: number) {
+  const geo = new THREE.BufferGeometry();
+
+  const life = new Float32Array(PARTICLE_COUNT);
+  const size = new Float32Array(PARTICLE_COUNT);
+  const velocity = new Float32Array(PARTICLE_COUNT * 3);
+  const phase = new Float32Array(PARTICLE_COUNT);
+  const position = new Float32Array(PARTICLE_COUNT * 3);
+
+  const streakBoost = Math.min(1 + streak * 0.05, 2.0);
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    life[i] = 0.4 + Math.random() * 0.6;
+    size[i] = 0.6 + Math.random() * 1.4;
+
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const speed = (0.8 + Math.random() * 2.2) * streakBoost;
+    velocity[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
+    velocity[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed + 0.8;
+    velocity[i * 3 + 2] = Math.cos(phi) * speed;
+
+    phase[i] = Math.random();
+
+    position[i * 3] = 0;
+    position[i * 3 + 1] = 0;
+    position[i * 3 + 2] = 0;
+  }
+
+  geo.setAttribute("position", new THREE.BufferAttribute(position, 3));
+  geo.setAttribute("aLife", new THREE.BufferAttribute(life, 1));
+  geo.setAttribute("aSize", new THREE.BufferAttribute(size, 1));
+  geo.setAttribute("aVelocity", new THREE.BufferAttribute(velocity, 3));
+  geo.setAttribute("aPhase", new THREE.BufferAttribute(phase, 1));
+
+  return geo;
+}
+
 /**
  * Single explosion burst using ShaderMaterial on a Points geometry.
  * 1000 particles with custom vertex displacement shimmer.
@@ -107,48 +145,7 @@ export default function CompletionExplosion({
 
   // Generate particle attributes once
   const { geometry } = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-
-    const life = new Float32Array(PARTICLE_COUNT);
-    const size = new Float32Array(PARTICLE_COUNT);
-    const velocity = new Float32Array(PARTICLE_COUNT * 3);
-    const phase = new Float32Array(PARTICLE_COUNT);
-    // Dummy position (all at origin; shader moves them)
-    const position = new Float32Array(PARTICLE_COUNT * 3);
-
-    // Streak scales intensity: more particles go farther
-    const streakBoost = Math.min(1 + explosion.streak * 0.05, 2.0);
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      // Life: some particles die sooner for variation
-      life[i] = 0.4 + Math.random() * 0.6;
-
-      // Size: range 0.6-2.0
-      size[i] = 0.6 + Math.random() * 1.4;
-
-      // Velocity: spherical burst
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const speed = (0.8 + Math.random() * 2.2) * streakBoost;
-      velocity[i * 3]     = Math.sin(phi) * Math.cos(theta) * speed;
-      velocity[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed + 0.8;
-      velocity[i * 3 + 2] = Math.cos(phi) * speed;
-
-      // Phase: for shimmer variation
-      phase[i] = Math.random();
-
-      // Position: all zero (shader uses uOrigin)
-      position[i * 3] = 0;
-      position[i * 3 + 1] = 0;
-      position[i * 3 + 2] = 0;
-    }
-
-    geo.setAttribute("position", new THREE.BufferAttribute(position, 3));
-    geo.setAttribute("aLife", new THREE.BufferAttribute(life, 1));
-    geo.setAttribute("aSize", new THREE.BufferAttribute(size, 1));
-    geo.setAttribute("aVelocity", new THREE.BufferAttribute(velocity, 3));
-    geo.setAttribute("aPhase", new THREE.BufferAttribute(phase, 1));
-
+    const geo = createExplosionGeometry(explosion.streak);
     return { geometry: geo };
   }, [explosion.streak]);
 
@@ -176,6 +173,8 @@ export default function CompletionExplosion({
       onComplete(explosion.id);
     }
   });
+
+
 
   // Clean up geometry on unmount
   useEffect(() => {

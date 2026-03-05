@@ -7,6 +7,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
 import DataProvider from "@/components/providers/DataProvider";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import MilestoneBadgeModal from "@/components/ui/MilestoneBadgeModal";
 
 export default function AppLayout({
   children,
@@ -29,6 +30,7 @@ export default function AppLayout({
           </main>
         </div>
       </div>
+      <MilestoneBadgeModal />
     </DataProvider>
   );
 }

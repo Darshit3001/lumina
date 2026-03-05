@@ -69,6 +69,51 @@ const INITIAL_MODAL: ModalState = {
   target: 1,
 };
 
+// ── Upgrade Modal Component ───────────────────────────────
+const UpgradeModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-overlay-enter" onClick={onClose}>
+    <div className="glass rounded-3xl p-8 max-w-md mx-4 text-center relative overflow-hidden animate-modal-enter" onClick={(e) => e.stopPropagation()}>
+      <div className="glass-shine-effect absolute inset-0" />
+      <div className="relative">
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef]">
+          <Lock className="h-7 w-7 text-white" />
+        </div>
+        <h2 className="text-xl font-bold text-white/90 mb-2">Unlock Unlimited Crystals</h2>
+        <p className="text-sm text-white/50 mb-6">
+          Free accounts can grow up to 5 crystals. Upgrade to Pro for unlimited habits,
+          priority AI coaching, and advanced analytics.
+        </p>
+        <div className="glass rounded-2xl p-4 mb-6">
+          <p className="text-3xl font-bold text-white/90">
+            ₹499<span className="text-sm font-normal text-white/40">/month</span>
+          </p>
+        </div>
+        <button
+          onClick={async () => {
+            try {
+              const res = await fetch("/api/stripe/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({}),
+              });
+              const data = await res.json();
+              if (data.url) window.location.href = data.url;
+            } catch {
+              toast.error("Failed to start checkout");
+            }
+          }}
+          className="w-full rounded-xl bg-gradient-to-r from-[#a78bfa] to-[#d946ef] px-6 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(167,139,250,0.4)] transition-all hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-[1.02]"
+        >
+          Upgrade to Pro
+        </button>
+        <button onClick={onClose} className="mt-3 text-xs text-white/30 hover:text-white/50 transition-colors">
+          Maybe later
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 export default function HabitsPage() {
   const habits = useHabitStore((s) => s.habits);
   const entries = useHabitStore((s) => s.entries);
@@ -169,50 +214,6 @@ export default function HabitsPage() {
     toast.success("Crystal removed from sanctuary");
   }, [deleteHabit]);
 
-  // ── Upgrade Modal Component ───────────────────────────────
-  const UpgradeModal = () => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-overlay-enter" onClick={() => setShowUpgrade(false)}>
-      <div className="glass rounded-3xl p-8 max-w-md mx-4 text-center relative overflow-hidden animate-modal-enter" onClick={(e) => e.stopPropagation()}>
-        <div className="glass-shine-effect absolute inset-0" />
-        <div className="relative">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#a78bfa] to-[#d946ef]">
-            <Lock className="h-7 w-7 text-white" />
-          </div>
-          <h2 className="text-xl font-bold text-white/90 mb-2">Unlock Unlimited Crystals</h2>
-          <p className="text-sm text-white/50 mb-6">
-            Free accounts can grow up to 5 crystals. Upgrade to Pro for unlimited habits,
-            priority AI coaching, and advanced analytics.
-          </p>
-          <div className="glass rounded-2xl p-4 mb-6">
-            <p className="text-3xl font-bold text-white/90">
-              ₹499<span className="text-sm font-normal text-white/40">/month</span>
-            </p>
-          </div>
-          <button
-            onClick={async () => {
-              try {
-                const res = await fetch("/api/stripe/checkout", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({}),
-                });
-                const data = await res.json();
-                if (data.url) window.location.href = data.url;
-              } catch {
-                toast.error("Failed to start checkout");
-              }
-            }}
-            className="w-full rounded-xl bg-gradient-to-r from-[#a78bfa] to-[#d946ef] px-6 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(167,139,250,0.4)] transition-all hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-[1.02]"
-          >
-            Upgrade to Pro
-          </button>
-          <button onClick={() => setShowUpgrade(false)} className="mt-3 text-xs text-white/30 hover:text-white/50 transition-colors">
-            Maybe later
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
   // ── Loading skeleton ──────────────────────────────────────
   if (isLoading) {
@@ -264,11 +265,10 @@ export default function HabitsPage() {
             key={cat.value}
             variant="secondary"
             onClick={() => setFilter(cat.value)}
-            className={`cursor-pointer border px-3 py-1.5 transition-all ${
-              filter === cat.value
+            className={`cursor-pointer border px-3 py-1.5 transition-all ${filter === cat.value
                 ? "border-[#a78bfa]/40 bg-[#a78bfa]/10 text-white/80"
                 : "border-transparent bg-white/[0.03] text-white/40 hover:border-white/10 hover:text-white/60"
-            }`}
+              }`}
           >
             <span
               className="mr-2 inline-block h-2 w-2 rounded-full"
@@ -480,11 +480,10 @@ export default function HabitsPage() {
                     <button
                       key={cat.value}
                       onClick={() => setModal((m) => ({ ...m, category: cat.value }))}
-                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs transition-all ${
-                        modal.category === cat.value
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs transition-all ${modal.category === cat.value
                           ? "border border-[#a78bfa]/30 bg-[#a78bfa]/10 text-white/80"
                           : "border border-white/[0.04] bg-white/[0.02] text-white/40 hover:bg-white/[0.05]"
-                      }`}
+                        }`}
                     >
                       <span className="h-2 w-2 rounded-full" style={{ backgroundColor: cat.color }} />
                       {cat.name}
@@ -501,11 +500,10 @@ export default function HabitsPage() {
                     <button
                       key={c}
                       onClick={() => setModal((m) => ({ ...m, color: c }))}
-                      className={`h-8 w-8 rounded-full transition-all ${
-                        modal.color === c
+                      className={`h-8 w-8 rounded-full transition-all ${modal.color === c
                           ? "ring-2 ring-white/40 scale-110"
                           : "hover:scale-105"
-                      }`}
+                        }`}
                       style={{
                         backgroundColor: c,
                         boxShadow: modal.color === c ? `0 0 12px ${c}60` : "none",
@@ -524,11 +522,10 @@ export default function HabitsPage() {
                       <button
                         key={f.value}
                         onClick={() => setModal((m) => ({ ...m, frequency: f.value }))}
-                        className={`flex-1 rounded-lg px-3 py-1.5 text-xs transition-all ${
-                          modal.frequency === f.value
+                        className={`flex-1 rounded-lg px-3 py-1.5 text-xs transition-all ${modal.frequency === f.value
                             ? "border border-[#a78bfa]/30 bg-[#a78bfa]/10 text-white/80"
                             : "border border-white/[0.04] bg-white/[0.02] text-white/40 hover:bg-white/[0.05]"
-                        }`}
+                          }`}
                       >
                         {f.label}
                       </button>
@@ -569,7 +566,7 @@ export default function HabitsPage() {
       )}
 
       {/* ── Upgrade Modal ─────────────────────────────────── */}
-      {showUpgrade && <UpgradeModal />}
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
     </div>
   );
 }

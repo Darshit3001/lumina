@@ -19,11 +19,11 @@ export default function CalendarPage() {
   const entries = useHabitStore((s) => s.entries);
   const isLoading = useHabitStore((s) => s.isLoading);
 
-  const activeHabits = habits.filter((h) => !h.isArchived);
+  const activeHabits = useMemo(() => habits.filter((h) => !h.isArchived), [habits]);
 
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const monthStart = useMemo(() => startOfMonth(currentMonth), [currentMonth]);
+  const monthEnd = useMemo(() => endOfMonth(currentMonth), [currentMonth]);
+  const days = useMemo(() => eachDayOfInterval({ start: monthStart, end: monthEnd }), [monthStart, monthEnd]);
   const startDayOfWeek = getDay(monthStart);
 
   const goToPrevMonth = () => {

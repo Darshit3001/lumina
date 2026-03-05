@@ -8,6 +8,7 @@ import { useMemo, useCallback } from "react";
 import { TrendingUp, Target, Flame, Trophy, Gem, BarChart3, Download, FileJson, FileSpreadsheet } from "lucide-react";
 import { useHabitStore } from "@/stores/habitStore";
 import { Button } from "@/components/ui/button";
+import ActivityHeatmap from "@/components/ui/ActivityHeatmap";
 import { toast } from "sonner";
 
 export default function AnalyticsPage() {
@@ -265,6 +266,8 @@ export default function AnalyticsPage() {
           )}
         </div>
       </div>
+
+      <ActivityHeatmap />
 
       {/* ── Per-Habit Breakdown ────────────────────────────── */}
       {habitStats.length > 0 && (

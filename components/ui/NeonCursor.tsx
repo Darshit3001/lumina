@@ -19,33 +19,6 @@ export default function NeonCursor() {
   );
   const raf = useRef<number>(0);
 
-  const animate = useCallback(() => {
-    const { x, y } = mouse.current;
-
-    // Update main dot
-    if (dotRef.current) {
-      dotRef.current.style.transform = `translate3d(${x - 8}px, ${y - 8}px, 0)`;
-    }
-
-    // Update trail particles with spring-like follow
-    positions.current.forEach((pos, i) => {
-      const target = i === 0 ? { x, y } : positions.current[i - 1];
-      const ease = 0.25 - i * 0.012;
-      pos.x += (target.x - pos.x) * ease;
-      pos.y += (target.y - pos.y) * ease;
-
-      const el = trailRefs.current[i];
-      if (el) {
-        const scale = 1 - i * (0.7 / TRAIL_LENGTH);
-        const opacity = (1 - i / TRAIL_LENGTH) * TRAIL_DECAY;
-        el.style.transform = `translate3d(${pos.x - 4}px, ${pos.y - 4}px, 0) scale(${scale})`;
-        el.style.opacity = `${opacity}`;
-      }
-    });
-
-    raf.current = requestAnimationFrame(animate);
-  }, []);
-
   useEffect(() => {
     // Hide on touch devices
     if (typeof window !== "undefined" && "ontouchstart" in window) return;
@@ -55,6 +28,33 @@ export default function NeonCursor() {
       mouse.current.y = e.clientY;
     };
 
+    const animate = () => {
+      const { x, y } = mouse.current;
+
+      // Update main dot
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${x - 8}px, ${y - 8}px, 0)`;
+      }
+
+      // Update trail particles with spring-like follow
+      positions.current.forEach((pos, i) => {
+        const target = i === 0 ? { x, y } : positions.current[i - 1];
+        const ease = 0.25 - i * 0.012;
+        pos.x += (target.x - pos.x) * ease;
+        pos.y += (target.y - pos.y) * ease;
+
+        const el = trailRefs.current[i];
+        if (el) {
+          const scale = 1 - i * (0.7 / TRAIL_LENGTH);
+          const opacity = (1 - i / TRAIL_LENGTH) * TRAIL_DECAY;
+          el.style.transform = `translate3d(${pos.x - 4}px, ${pos.y - 4}px, 0) scale(${scale})`;
+          el.style.opacity = `${opacity}`;
+        }
+      });
+
+      raf.current = requestAnimationFrame(animate);
+    };
+
     window.addEventListener("mousemove", onMove, { passive: true });
     raf.current = requestAnimationFrame(animate);
 
@@ -62,7 +62,7 @@ export default function NeonCursor() {
       window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf.current);
     };
-  }, [animate]);
+  }, []);
 
   // Don't render on touch devices / SSR
   if (typeof window !== "undefined" && "ontouchstart" in window) return null;
